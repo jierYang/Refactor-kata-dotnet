@@ -8,6 +8,8 @@ namespace Kata.Refactor.After
         public class KeysFilter
         {
             private ISessionService SessionService { get; set; }
+            
+            private readonly MarksHelper _marksHelper = new MarksHelper();
 
             public List<string> Filter(IList<string> marks, bool isGoldenKey)
             {
@@ -18,9 +20,9 @@ namespace Kata.Refactor.After
 
                 if (isGoldenKey)
                 {
-                    var goldenMarks  = GetGoldenMarks(marks);
+                    var goldenMarks = _marksHelper.GetGoldenMarks(marks);
                     
-                    var goldenMarksFilterByKeys = GetMarksFilterByKeys(goldenMarks, FilterKey.CopperKey);
+                    var goldenMarksFilterByKeys = GetMarksFilterByKeys(goldenMarks, FilterKey.GoldenKey);
 
                     return goldenMarksFilterByKeys;
                 }
@@ -40,30 +42,8 @@ namespace Kata.Refactor.After
 
                 var keys = new List<string>(silverKeys);
 
-                return marks.Where(mark => keys.Contains(mark) || IsFakeMark(mark)).ToList();
+                return marks.Where(mark => keys.Contains(mark) || _marksHelper.IsFakeMark(mark)).ToList();
             }
-
-            private List<string> GetGoldenMarks(IList<string> marks)
-            {
-                var golden01Mark = marks.Where(x => x.StartsWith("GD01"));
-
-                var golden02Mark = marks.Where(x => x.StartsWith("GD02"))
-                    .Where(x => golden01Mark.Any(m => m.Substring(4, 6).Equals(x.Substring(4, 6)))).ToList();
-
-                var goldenMarks = golden02Mark.Concat(golden01Mark).ToList();
-                
-                return goldenMarks;
-            }
-
-            private bool IsFakeMark(string mark)
-            {
-                return mark.EndsWith("FAKE");
-            }
-        }
-
-        public interface ISessionService
-        {
-            IEnumerable<string> Get<T>(string sessionKey);
         }
     }
 }
