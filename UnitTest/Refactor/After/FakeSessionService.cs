@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Kata.Refactor.Before;
+using Kata.Refactor.After;
 
-namespace UnitTest.Refactor
+namespace UnitTest.Refactor.After
 {
     public class FakeSessionService : ISessionService
     {

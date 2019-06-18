@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using Kata.Refactor.Before;
+using Kata.Refactor.After;
 using Xunit;
 
-namespace UnitTest.Refactor
+namespace UnitTest.Refactor.After
 {
     public class KeysFilterTests
     {
@@ -20,8 +21,6 @@ namespace UnitTest.Refactor
                     BindingFlags.SetProperty | BindingFlags.NonPublic | BindingFlags.Instance, null, _keysFilter,
                     new object[] {_sessionService});
             }
-            
-      
 
             [Fact]
             public void ShouldReturnEmptyListWhenMarksIsNull()
@@ -74,7 +73,7 @@ namespace UnitTest.Refactor
                 IList<string> marks = new List<string> {"GD01x00001", "GD02x00001"};
                 _sessionService.SessionKeys["GoldenKey"] = sessionKeys;
                 var result = _keysFilter.Filter(marks, true);
-                Assert.Equal(marks, result);
+                Assert.True(!marks.Except(result).Any() && marks.Count == result.Count);
             }
 
             [Fact]
@@ -98,7 +97,8 @@ namespace UnitTest.Refactor
                 _sessionService.SessionKeys["SilverKey"] = sessionSilverKeys;
                 _sessionService.SessionKeys["CopperKey"] = sessionCopperKeys;
                 var result = _keysFilter.Filter(marks, false);
-                Assert.Equal(new List<string>() {"CP01x00001", "SL01x00001"}, result);
+                var expect = new List<string>() {"CP01x00001", "SL01x00001"};
+                Assert.True(!expect.Except(result).Any() && expect.Count == result.Count);
             }
         }
     }

@@ -11,7 +11,7 @@ namespace Kata.Refactor.After
 
         public List<string> Filter(IList<string> marks, bool isGoldenKey)
         {
-            if (marks == null && marks.Count == 0)
+            if (marks == null || marks.Count == 0)
             {
                 return new List<string>();
             }
@@ -29,7 +29,7 @@ namespace Kata.Refactor.After
 
             var copperMarksFilterByKeys = GetMarksFilterByKeys(marks, FilterKey.CopperKey);
 
-            var otherMarks = silverMarksFilterByKeys.Concat(copperMarksFilterByKeys).ToList();
+            var otherMarks = silverMarksFilterByKeys.Concat(copperMarksFilterByKeys).Distinct().ToList();
 
             return otherMarks;
         }
